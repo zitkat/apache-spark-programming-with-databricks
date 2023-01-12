@@ -126,7 +126,7 @@ stupid_df.explain(True)
 
 # COMMAND ----------
 
-jdbc_url = "jdbc:postgresql://54.213.33.240/training"
+jdbc_url = "jdbc:postgresql://35.89.73.255/training"
 
 # Username and Password w/read-only rights
 conn_properties = {
@@ -204,7 +204,7 @@ DA.cleanup()
 # COMMAND ----------
 
 # MAGIC %md-sandbox
-# MAGIC &copy; 2022 Databricks, Inc. All rights reserved.<br/>
+# MAGIC &copy; 2023 Databricks, Inc. All rights reserved.<br/>
 # MAGIC Apache, Apache Spark, Spark and the Spark logo are trademarks of the <a href="https://www.apache.org/">Apache Software Foundation</a>.<br/>
 # MAGIC <br/>
 # MAGIC <a href="https://databricks.com/privacy-policy">Privacy Policy</a> | <a href="https://databricks.com/terms-of-use">Terms of Use</a> | <a href="https://help.databricks.com/">Support</a>
