@@ -66,7 +66,7 @@ users_df.printSchema()
 
 users_df = (spark
            .read
-           .csv(users_csv_path, sep="\t", header=True, inferSchema=True)
+           .csv(users_csv_path, sep="\t", header=True, schema=user_defined_schema)
           )
 
 users_df.printSchema()
@@ -356,6 +356,10 @@ events_output_path = f"{DA.paths.working_dir}/delta/events"
  .mode("overwrite")
  .save(events_output_path)
 )
+
+# COMMAND ----------
+
+DA.paths.working_dir
 
 # COMMAND ----------
 

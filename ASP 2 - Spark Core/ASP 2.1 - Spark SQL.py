@@ -178,7 +178,7 @@ display(budget_df)
 
 # COMMAND ----------
 
-budget_df.schema
+display(budget_df.schema)
 
 # COMMAND ----------
 

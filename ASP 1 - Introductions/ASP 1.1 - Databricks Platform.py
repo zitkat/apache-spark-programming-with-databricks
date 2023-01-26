@@ -153,11 +153,19 @@ displayHTML(html)
 
 # COMMAND ----------
 
-# MAGIC %fs ls
+# MAGIC %fs ls databricks-datasets
 
 # COMMAND ----------
 
 # MAGIC %fs ls dbfs:/tmp
+
+# COMMAND ----------
+
+# MAGIC %fs head /mnt/dbacademy-datasets/apache-spark-programming-with-databricks/v03/ecommerce/README.md
+
+# COMMAND ----------
+
+# MAGIC %fs head databricks-datasets/README.md
 
 # COMMAND ----------
 
@@ -199,6 +207,10 @@ display(files)
 
 # COMMAND ----------
 
+files[0]
+
+# COMMAND ----------
+
 # MAGIC %md Let's take one more look at our temp file...
 
 # COMMAND ----------
@@ -221,7 +233,11 @@ print("-"*80)
 # COMMAND ----------
 
 files = dbutils.fs.ls(DA.paths.events)
-display(files)
+display([{"name": f.name} for f in files])
+
+# COMMAND ----------
+
+DA.paths.events
 
 # COMMAND ----------
 
@@ -244,6 +260,10 @@ spark.conf.set("whatever.events", DA.paths.events)
 # MAGIC This is so that we don't accidently step over other configuration parameters.
 # MAGIC 
 # MAGIC You will see throughout this course our usage of the "DA" namesapce as in **`DA.paths.some_file`**
+
+# COMMAND ----------
+
+spark.conf.get("whatever.events")
 
 # COMMAND ----------
 
@@ -270,6 +290,10 @@ print(f"Database Name: {DA.schema_name}")
 # COMMAND ----------
 
 # MAGIC %md ... or even the tables in that database:
+
+# COMMAND ----------
+
+DA.schema_name
 
 # COMMAND ----------
 

@@ -35,7 +35,7 @@
 
 # COMMAND ----------
 
-# <FILL_IN>
+# MAGIC %fs ls dbfs:/mnt/dbacademy-users
 
 # COMMAND ----------
 
@@ -48,7 +48,7 @@
 # COMMAND ----------
 
 # TODO
-files = FILL_IN
+files = dbutils.fs.ls("dbfs:/mnt/dbacademy-users/")
 display(files)
 
 # COMMAND ----------
@@ -63,8 +63,29 @@ display(files)
 
 # COMMAND ----------
 
+spark.conf.set("db_paths.users", DA.paths.users)
+
+# COMMAND ----------
+
 # MAGIC %sql
-# MAGIC -- TODO
+# MAGIC CREATE TABLE IF NOT EXISTS users
+# MAGIC USING DELTA
+# MAGIC OPTIONS (path = "${db_paths.users}")
+
+# COMMAND ----------
+
+def create_table(name, path):
+    spark.sql(
+f"""CREATE TABLE IF NOT EXISTS {name}
+USING DELTA
+OPTIONS (path = {path})
+""")
+
+# COMMAND ----------
+
+create_table("sales", DA.paths.sales)
+create_table("products", DA.paths.products)
+create_table("events", DA.paths.events)
 
 # COMMAND ----------
 
@@ -100,7 +121,7 @@ display(files)
 # COMMAND ----------
 
 # MAGIC %sql
-# MAGIC -- TODO
+# MAGIC SELECT * FROM products
 
 # COMMAND ----------
 
@@ -126,7 +147,12 @@ display(files)
 # COMMAND ----------
 
 # MAGIC %sql
-# MAGIC -- TODO
+# MAGIC SELECT AVG(purchase_revenue_in_usd) FROM sales
+
+# COMMAND ----------
+
+# MAGIC %sql
+# MAGIC SELECT AVG(price) from products
 
 # COMMAND ----------
 
@@ -155,7 +181,7 @@ display(files)
 # COMMAND ----------
 
 # MAGIC %sql
-# MAGIC -- TODO
+# MAGIC SELECT DISTINCT event_name FROM events
 
 # COMMAND ----------
 
