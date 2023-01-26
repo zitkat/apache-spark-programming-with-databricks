@@ -48,7 +48,7 @@ display(df)
 
 # COMMAND ----------
 
-df.groupBy("event_name")
+gf = df.groupBy("event_name")
 
 # COMMAND ----------
 
