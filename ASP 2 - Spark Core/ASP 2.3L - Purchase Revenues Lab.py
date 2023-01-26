@@ -39,7 +39,7 @@ display(events_df)
 # COMMAND ----------
 
 # TODO
-revenue_df = events_df.FILL_IN
+revenue_df = events_df.withColumn("revenue", events_df["ecommerce"].purchase_revenue_in_usd)
 display(revenue_df)
 
 # COMMAND ----------
@@ -63,7 +63,7 @@ print("All test pass")
 # COMMAND ----------
 
 # TODO
-purchases_df = revenue_df.FILL_IN
+purchases_df = revenue_df[revenue_df["revenue"].isNotNull()]
 display(purchases_df)
 
 # COMMAND ----------
@@ -87,7 +87,7 @@ print("All test pass")
 # COMMAND ----------
 
 # TODO
-distinct_df = purchases_df.FILL_IN
+distinct_df = purchases_df.drop_duplicates(["event_name"])
 display(distinct_df)
 
 # COMMAND ----------
@@ -99,7 +99,7 @@ display(distinct_df)
 # COMMAND ----------
 
 # TODO
-final_df = purchases_df.FILL_IN
+final_df = purchases_df.drop("event_name")
 display(final_df)
 
 # COMMAND ----------
@@ -122,7 +122,10 @@ print("All test pass")
 
 # TODO
 final_df = (events_df
-  .FILL_IN
+            .withColumn("revenue", 
+                        col("ecommerce").purchase_revenue_in_usd)
+            .where("revenue IS NOT NULL")
+            .drop("event_name")
 )
 
 display(final_df)

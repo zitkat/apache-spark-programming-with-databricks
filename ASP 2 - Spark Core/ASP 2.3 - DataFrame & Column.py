@@ -51,6 +51,11 @@ print(col("device"))
 
 # COMMAND ----------
 
+c = col("devices")
+c.desc()
+
+# COMMAND ----------
+
 # MAGIC %md
 # MAGIC Scala supports an additional syntax for creating a new Column based on existing columns in a DataFrame
 
@@ -81,6 +86,11 @@ print(col("device"))
 col("ecommerce.purchase_revenue_in_usd") + col("ecommerce.total_item_quantity")
 col("event_timestamp").desc()
 (col("ecommerce.purchase_revenue_in_usd") * 100).cast("int")
+
+# COMMAND ----------
+
+c = col("event_timestamp")
+c.desc()
 
 # COMMAND ----------
 
@@ -130,6 +140,10 @@ display(devices_df)
 
 # COMMAND ----------
 
+display(events_df[["user_id", "device"]])
+
+# COMMAND ----------
+
 from pyspark.sql.functions import col
 
 locations_df = events_df.select(
@@ -147,6 +161,11 @@ display(locations_df)
 # COMMAND ----------
 
 apple_df = events_df.selectExpr("user_id", "device in ('macOS', 'iOS') as apple_user")
+display(apple_df)
+
+# COMMAND ----------
+
+apple_df = events_df.withColumn("apple_user", events_df["device"].isin(['macOS', 'iOS'])).select("user_id", "apple_user")
 display(apple_df)
 
 # COMMAND ----------
@@ -270,7 +289,7 @@ display(increase_timestamps_df)
 
 # COMMAND ----------
 
-decrease_timestamp_df = events_df.sort(col("event_timestamp").desc())
+decrease_timestamp_df = events_df.sort(col("event_timestamp"), ascending=False)
 display(decrease_timestamp_df)
 
 # COMMAND ----------
