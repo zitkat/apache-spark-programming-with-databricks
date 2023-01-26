@@ -33,10 +33,20 @@
 
 # TODO
 single_product_csv_file_path = f"{DA.paths.datasets}/products/products.csv/part-00000-tid-1663954264736839188-daf30e86-5967-4173-b9ae-d1481d3506db-2367-1-c000.csv"
-print(FILL_IN)
+print(dbutils.fs.head(single_product_csv_file_path))
+
+# COMMAND ----------
+
+DA.paths.datasets
+
+# COMMAND ----------
+
+# TODO
+single_product_csv_file_path = f"{DA.paths.datasets}/products/products.csv/part-00000-tid-1663954264736839188-daf30e86-5967-4173-b9ae-d1481d3506db-2367-1-c000.csv"
+print(dbutils.fs.head(single_product_csv_file_path))
 
 products_csv_path = f"{DA.paths.datasets}/products/products.csv"
-products_df = FILL_IN
+products_df = spark.read.csv(path=products_csv_path, header=True, inferSchema=True)
 
 products_df.printSchema()
 
@@ -46,8 +56,20 @@ products_df.printSchema()
 
 # COMMAND ----------
 
+products_df.count()
+
+# COMMAND ----------
+
 assert(products_df.count() == 12)
 print("All test pass")
+
+# COMMAND ----------
+
+products_df.schema
+
+# COMMAND ----------
+
+products_df.schema
 
 # COMMAND ----------
 
@@ -56,10 +78,13 @@ print("All test pass")
 
 # COMMAND ----------
 
-# TODO
-user_defined_schema = FILL_IN
+from pyspark.sql.types import LongType, StringType, StructType, StructField, DoubleType
+user_defined_schema = StructType([
+    StructField('item_id', StringType(), True), 
+    StructField('name', StringType(), True), 
+    StructField('price', DoubleType(), True)])
 
-products_df2 = FILL_IN
+products_df2 = spark.read.csv(products_csv_path, schema=user_defined_schema, header=True)
 
 # COMMAND ----------
 
@@ -87,9 +112,9 @@ print("All test pass")
 # COMMAND ----------
 
 # TODO
-ddl_schema = FILL_IN
+ddl_schema = "item_id string, name string, price double"
 
-products_df3 = FILL_IN
+products_df3 = spark.read.csv(products_csv_path, schema=ddl_schema, header=True)
 
 # COMMAND ----------
 
@@ -109,7 +134,11 @@ print("All test pass")
 
 # TODO
 products_output_path = f"{DA.paths.working_dir}/delta/products"
-products_df.FILL_IN
+products_df.write.save(products_output_path, format="delta")
+
+# COMMAND ----------
+
+display(dbutils.fs.ls(products_output_path))
 
 # COMMAND ----------
 
