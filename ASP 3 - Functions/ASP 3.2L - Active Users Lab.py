@@ -31,8 +31,7 @@ from pyspark.sql.functions import col
 
 df = (spark
       .read
-      .format("delta")
-      .load(DA.paths.events)
+      .load(DA.paths.events, format="delta")
       .select("user_id", col("event_timestamp").alias("ts"))
      )
 
@@ -47,9 +46,18 @@ display(df)
 # COMMAND ----------
 
 # TODO
-datetime_df = (df.FILL_IN
-)
+from pyspark.sql.functions import cast, to_date
+from pyspark.sql.types import TimestampType
+
+datetime_df = (df
+               .withColumn("ts", (col("ts") / 1e6).cast("timestamp"))
+               .withColumn("date", to_date("ts"))
+              )
 display(datetime_df)
+
+# COMMAND ----------
+
+datetime_df.schema
 
 # COMMAND ----------
 
@@ -90,14 +98,30 @@ print("All test pass")
 
 # COMMAND ----------
 
-# TODO
-active_users_df = (datetime_df.FILL_IN
+active_users_dfg = (datetime_df
+                   .groupBy("date")   
 )
-display(active_users_df)
+
+# COMMAND ----------
+
+from pyspark.sql.functions import approx_count_distinct
+active_users_dfg = active_users_dfg.agg(approx_count_distinct("user_id").alias("active_users"))
+
+# COMMAND ----------
+
+active_users_dfg = active_users_dfg.sort("date")
+
+# COMMAND ----------
+
+display(active_users_dfg)
 
 # COMMAND ----------
 
 # MAGIC %md **2.1: CHECK YOUR WORK**
+
+# COMMAND ----------
+
+active_users_df = active_users_dfg
 
 # COMMAND ----------
 
@@ -130,8 +154,13 @@ print("All test pass")
 
 # COMMAND ----------
 
-# TODO
-active_dow_df = (active_users_df.FILL_IN
+from pyspark.sql.functions import date_format
+
+active_dow_df = (active_users_df
+                 .withColumn("day", date_format(col("date"), "EEE"))
+                 .groupBy("day")
+                 .avg("active_users")
+                 .withColumnRenamed("avg(active_users)", "avg_users")
 )
 display(active_dow_df)
 
