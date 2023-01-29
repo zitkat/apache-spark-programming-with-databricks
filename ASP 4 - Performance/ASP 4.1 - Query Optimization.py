@@ -79,6 +79,11 @@ better_df.explain(True)
 # COMMAND ----------
 
 # MAGIC %md
+# MAGIC They are the same, optimizer is able to see through our lies! 
+
+# COMMAND ----------
+
+# MAGIC %md
 # MAGIC Of course, we wouldn't write the following code intentionally, but in a long, complex query you might not notice the duplicate filter conditions. Let's see what Catalyst does with this query.
 
 # COMMAND ----------
