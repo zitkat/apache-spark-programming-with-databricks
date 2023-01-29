@@ -74,6 +74,10 @@ display(timestamp_df)
 
 # COMMAND ----------
 
+timestamp_df.schema
+
+# COMMAND ----------
+
 # MAGIC %md ### Datetime Patterns for Formatting and Parsing
 # MAGIC There are several common scenarios for datetime usage in Spark:
 # MAGIC 
@@ -108,10 +112,14 @@ display(timestamp_df)
 from pyspark.sql.functions import date_format
 
 formatted_df = (timestamp_df
-                .withColumn("date string", date_format("timestamp", "MMMM dd, yyyy"))
+                .withColumn("date string", date_format("timestamp", "dd-MMM-yyyy"))
                 .withColumn("time string", date_format("timestamp", "HH:mm:ss.SSSSSS"))
                )
 display(formatted_df)
+
+# COMMAND ----------
+
+formatted_df.schema
 
 # COMMAND ----------
 
@@ -152,6 +160,10 @@ from pyspark.sql.functions import to_date
 
 date_df = timestamp_df.withColumn("date", to_date(col("timestamp")))
 display(date_df)
+
+# COMMAND ----------
+
+date_df.schema
 
 # COMMAND ----------
 
