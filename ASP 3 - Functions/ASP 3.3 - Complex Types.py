@@ -33,9 +33,14 @@ from pyspark.sql.functions import *
 
 # COMMAND ----------
 
-df = spark.read.format("delta").load(DA.paths.sales)
+df = spark.read.load(DA.paths.sales, format="delta")
 
 display(df)
+
+# COMMAND ----------
+
+display(df.withColumn("items", explode("items")))
+
 
 # COMMAND ----------
 
