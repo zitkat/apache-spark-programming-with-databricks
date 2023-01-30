@@ -46,8 +46,17 @@ df = (spark.readStream
 
 # COMMAND ----------
 
+from pyspark.sql import functions as F
+
+# COMMAND ----------
+
 # TODO
-events_df = (df.FILL_IN)
+events_df = (df
+             .withColumn("createdAt", 
+                         F.timestamp_seconds(
+                             F.col("event_timestamp") / 1e6))
+             .withWatermark('createdAt', '2 hours')
+            )
 
 # COMMAND ----------
 
@@ -70,10 +79,26 @@ DA.tests.validate_1_1(events_df.schema)
 
 # COMMAND ----------
 
-# TODO
-spark.FILL_IN
+sc.defaultParallelism
 
-traffic_df = (events_df.FILL_IN
+# COMMAND ----------
+
+spark.conf.set("spark.sql.shuffle.partitions", spark.sparkContext.defaultParallelism)
+spark.conf.get("spark.sql.shuffle.partitions")
+
+# COMMAND ----------
+
+events_df
+
+# COMMAND ----------
+
+traffic_df = (events_df
+              .groupBy(F.window("createdAt", windowDuration="1 hour"),
+                       "traffic_source")
+              .agg(F.approx_count_distinct(F.col("user_id")).alias("active_users"))
+              .select(F.col("traffic_source"),F.col("active_users"), F.hour(F.col("window").start).alias("hour"))
+              .orderBy(F.col("hour"), ascending=True)
+              
 )
 
 # COMMAND ----------
@@ -97,7 +122,7 @@ DA.tests.validate_2_1(traffic_df.schema)
 
 # COMMAND ----------
 
-# TODO
+display(traffic_df, streamName="hourly_traffic")
 
 # COMMAND ----------
 
@@ -118,7 +143,13 @@ DA.tests.validate_2_1(traffic_df.schema)
 # TODO
 DA.block_until_stream_is_ready("hourly_traffic")
 
-for s in FILL_IN:
+for s in spark.streams.active:
+    print(s.name, end=" ... ")
+    if s.name == "hourly_traffic":
+        s.stop()
+        print("stopping")
+    else:
+        print()
 
 # COMMAND ----------
 

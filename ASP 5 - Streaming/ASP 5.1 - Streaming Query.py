@@ -33,6 +33,10 @@
 
 # COMMAND ----------
 
+display(dbutils.fs.ls(DA.paths.events))
+
+# COMMAND ----------
+
 df = (spark
       .readStream
       .option("maxFilesPerTrigger", 1)
