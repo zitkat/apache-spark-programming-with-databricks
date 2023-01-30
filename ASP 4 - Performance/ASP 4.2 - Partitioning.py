@@ -71,11 +71,16 @@ print(sc.defaultParallelism)
 
 # COMMAND ----------
 
+# note that this is lazy and is only triggered by an action
 repartitioned_df = df.repartition(8)
 
 # COMMAND ----------
 
 repartitioned_df.rdd.getNumPartitions()
+
+# COMMAND ----------
+
+df.rdd.getNumPartitions()
 
 # COMMAND ----------
 

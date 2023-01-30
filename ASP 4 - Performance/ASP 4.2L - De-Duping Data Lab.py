@@ -59,7 +59,11 @@ dbutils.fs.head(f"{DA.paths.datasets}/people/people-with-dups.txt")
 
 # COMMAND ----------
 
-# TODO
+dbutils.fs.ls(f"{DA.paths.datasets}/people/")
+
+# COMMAND ----------
+
+from pyspark.sql.functions import *
 
 source_file = f"{DA.paths.datasets}/people/people-with-dups.txt"
 delta_dest_dir = f"{DA.paths.working_dir}/people"
@@ -67,8 +71,36 @@ delta_dest_dir = f"{DA.paths.working_dir}/people"
 # In case it already exists
 dbutils.fs.rm(delta_dest_dir, True)
 
-# Complete your work here...
 
+people_df = (spark
+              .read.csv(source_file, sep=":", header=True)
+              .withColumn("combinedName", lower(concat(col("firstName"), 
+                                                       col("middleName"), 
+                                                       col("lastName"))))
+              .dropDuplicates(["combinedName"])
+              .drop("combinedName")
+              .coalesce(1)  # returns! new DataFrame i.e. is NOT in place
+             )
+
+# COMMAND ----------
+
+display(people_df.count())
+
+# COMMAND ----------
+
+people_df.rdd.getNumPartitions()
+
+# COMMAND ----------
+
+people_df.write.save(delta_dest_dir,mode="overwrite", format="delta")
+
+# COMMAND ----------
+
+f"{DA.paths.working_dir}/people"
+
+# COMMAND ----------
+
+# MAGIC %fs ls /mnt/dbacademy-users/tomas.zitka@datasentics.com/apache-spark-programming-with-databricks/people
 
 # COMMAND ----------
 
