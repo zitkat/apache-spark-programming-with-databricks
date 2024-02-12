@@ -1,6 +1,6 @@
 # Databricks notebook source
 # MAGIC %md-sandbox
-# MAGIC 
+# MAGIC
 # MAGIC <div style="text-align: center; line-height: 0; padding-top: 9px;">
 # MAGIC   <img src="https://databricks.com/wp-content/uploads/2018/03/db-academy-rgb-1200px.png" alt="Databricks Learning" style="width: 600px">
 # MAGIC </div>
@@ -9,10 +9,10 @@
 
 # MAGIC %md
 # MAGIC # Databricks Platform
-# MAGIC 
+# MAGIC
 # MAGIC Demonstrate basic functionality and identify terms related to working in the Databricks workspace.
-# MAGIC 
-# MAGIC 
+# MAGIC
+# MAGIC
 # MAGIC ##### Objectives
 # MAGIC 1. Execute code in multiple languages
 # MAGIC 1. Create documentation cells
@@ -20,8 +20,8 @@
 # MAGIC 1. Create database and table
 # MAGIC 1. Query table and plot results
 # MAGIC 1. Add notebook parameters with widgets
-# MAGIC 
-# MAGIC 
+# MAGIC
+# MAGIC
 # MAGIC ##### Databricks Notebook Utilities
 # MAGIC - <a href="https://docs.databricks.com/notebooks/notebooks-use.html#language-magic" target="_blank">Magic commands</a>: **`%python`**, **`%scala`**, **`%sql`**, **`%r`**, **`%sh`**, **`%md`**
 # MAGIC - <a href="https://docs.databricks.com/dev-tools/databricks-utils.html" target="_blank">DBUtils</a>: **`dbutils.fs`** (**`%fs`**), **`dbutils.notebooks`** (**`%run`**), **`dbutils.widgets`**
@@ -31,7 +31,7 @@
 
 # MAGIC %md ### Setup
 # MAGIC Run classroom setup to <a href="https://docs.databricks.com/data/databricks-file-system.html#mount-storage" target="_blank">mount</a> Databricks training datasets and create your own database for BedBricks.
-# MAGIC 
+# MAGIC
 # MAGIC Use the **`%run`** magic command to run another notebook within a notebook
 
 # COMMAND ----------
@@ -53,8 +53,7 @@ print("Run default language")
 
 # COMMAND ----------
 
-# MAGIC %python
-# MAGIC print("Run python")
+print("Run python")
 
 # COMMAND ----------
 
@@ -93,23 +92,23 @@ displayHTML(html)
 # MAGIC %md
 # MAGIC ## Create documentation cells
 # MAGIC Render cell as <a href="https://www.markdownguide.org/cheat-sheet/" target="_blank">Markdown</a> using the magic command: **`%md`**
-# MAGIC 
+# MAGIC
 # MAGIC Below are some examples of how you can use Markdown to format documentation. Click this cell and press **`Enter`** to view the underlying Markdown syntax.
-# MAGIC 
-# MAGIC 
+# MAGIC
+# MAGIC
 # MAGIC # Heading 1
 # MAGIC ### Heading 3
 # MAGIC > block quote
-# MAGIC 
+# MAGIC
 # MAGIC 1. **bold**
 # MAGIC 2. *italicized*
 # MAGIC 3. ~~strikethrough~~
-# MAGIC 
+# MAGIC
 # MAGIC ---
-# MAGIC 
+# MAGIC
 # MAGIC - <a href="https://www.markdownguide.org/cheat-sheet/" target="_blank">link</a>
 # MAGIC - `code`
-# MAGIC 
+# MAGIC
 # MAGIC ```
 # MAGIC {
 # MAGIC   "message": "This is a code block",
@@ -117,9 +116,9 @@ displayHTML(html)
 # MAGIC   "alternative": "https://www.markdownguide.org/basic-syntax/#code-blocks"
 # MAGIC }
 # MAGIC ```
-# MAGIC 
+# MAGIC
 # MAGIC ![Spark Logo](https://files.training.databricks.com/images/Apache-Spark-Logo_TM_200px.png)
-# MAGIC 
+# MAGIC
 # MAGIC | Element         | Markdown Syntax |
 # MAGIC |-----------------|-----------------|
 # MAGIC | Heading         | `#H1` `##H2` `###H3` `#### H4` `##### H5` `###### H6` |
@@ -140,9 +139,9 @@ displayHTML(html)
 
 # MAGIC %md ## Access DBFS (Databricks File System)
 # MAGIC The <a href="https://docs.databricks.com/data/databricks-file-system.html" target="_blank">Databricks File System</a> (DBFS) is a virtual file system that allows you to treat cloud object storage as though it were local files and directories on the cluster.
-# MAGIC 
+# MAGIC
 # MAGIC Run file system commands on DBFS using the magic command: **`%fs`**
-# MAGIC 
+# MAGIC
 # MAGIC <br/>
 # MAGIC <img src="https://files.training.databricks.com/images/icon_hint_24.png"/>
 # MAGIC Replace the instances of <strong>FILL_IN</strong> in the cells below with your email address:
@@ -225,10 +224,19 @@ print("-"*80)
 # COMMAND ----------
 
 # MAGIC %md ## Our First Table
-# MAGIC 
+# MAGIC
 # MAGIC Is located in the path identfied by **`DA.paths.events`** (a variable we created for you).
-# MAGIC 
+# MAGIC
 # MAGIC We can see those files by running the following cell
+
+# COMMAND ----------
+
+DA.paths.events
+
+# COMMAND ----------
+
+# MAGIC %sql
+# MAGIC SELECT * FROM json.`dbfs:/mnt/dbacademy-datasets/apache-spark-programming-with-databricks/v03/ecommerce/events/events.delta/_delta_log/00000000000000000000.json`
 
 # COMMAND ----------
 
@@ -243,9 +251,9 @@ DA.paths.events
 
 # MAGIC %md ## But, Wait!
 # MAGIC I cannot use variables in SQL commands.
-# MAGIC 
+# MAGIC
 # MAGIC With the following trick you can!
-# MAGIC 
+# MAGIC
 # MAGIC Declare the python variable as a variable in the spark context which SQL commands can access:
 
 # COMMAND ----------
@@ -256,9 +264,9 @@ spark.conf.set("whatever.events", DA.paths.events)
 
 # MAGIC %md
 # MAGIC <img src="https://files.training.databricks.com/images/icon_note_24.png"> In the above example we use **`whatever.`** to give our variable a "namespace".
-# MAGIC 
+# MAGIC
 # MAGIC This is so that we don't accidently step over other configuration parameters.
-# MAGIC 
+# MAGIC
 # MAGIC You will see throughout this course our usage of the "DA" namesapce as in **`DA.paths.some_file`**
 
 # COMMAND ----------
@@ -269,6 +277,8 @@ spark.conf.get("whatever.events")
 
 # MAGIC %md ## Create table
 # MAGIC Run <a href="https://docs.databricks.com/spark/latest/spark-sql/language-manual/index.html#sql-reference" target="_blank">Databricks SQL Commands</a> to create a table named **`events`** using BedBricks event files on DBFS.
+# MAGIC
+# MAGIC The following actually creates an external table.
 
 # COMMAND ----------
 
@@ -279,8 +289,13 @@ spark.conf.get("whatever.events")
 
 # COMMAND ----------
 
+# MAGIC %sql
+# MAGIC DESCRIBE DETAIL events
+
+# COMMAND ----------
+
 # MAGIC %md This table was saved in the database created for you in classroom setup.
-# MAGIC 
+# MAGIC
 # MAGIC See database name printed below.
 
 # COMMAND ----------
@@ -329,7 +344,7 @@ DA.schema_name
 
 # MAGIC %md ## Add notebook parameters with widgets
 # MAGIC Use <a href="https://docs.databricks.com/notebooks/widgets.html" target="_blank">widgets</a> to add input parameters to your notebook.
-# MAGIC 
+# MAGIC
 # MAGIC Create a text input widget using SQL.
 
 # COMMAND ----------
